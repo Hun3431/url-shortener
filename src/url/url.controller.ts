@@ -4,6 +4,9 @@ import {
   Post,
   Body,
   Get,
+  Param,
+  Redirect,
+  NotFoundException,
   BadRequestException,
   Query,
 } from '@nestjs/common';
@@ -13,6 +16,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger';
@@ -24,7 +28,7 @@ import { CreateUrlDto } from 'src/dto/url/create.dto';
 export class UrlController {
   constructor(private readonly urlService: UrlService) {}
 
-  @Post('create')
+  @Post('/create')
   @ApiOperation({
     summary: 'URL 단축 생성',
     description:
@@ -47,6 +51,24 @@ export class UrlController {
     }
     // 수정: createUrlDto 전체를 service에 전달
     return this.urlService.createShortUrl(createUrlDto);
+  }
+
+  @Get(':shortUrl')
+  @ApiOperation({
+    summary: '단축 URL 리다이렉트',
+    description: '단축 URL로 접속 시 원래 URL로 리다이렉트합니다.',
+  })
+  @ApiParam({ name: 'shortUrl', description: '단축 URL' })
+  @ApiOkResponse({ description: '리다이렉트 성공' })
+  @Redirect('', 302)
+  async redirectUrl(
+    @Param('shortUrl') shortUrl: string,
+  ): Promise<{ url: string }> {
+    const originalUrl = await this.urlService.getOriginalUrl(shortUrl);
+    if (!originalUrl) {
+      throw new NotFoundException('존재하지 않는 단축 URL입니다.');
+    }
+    return { url: originalUrl };
   }
 
   @Get('exists')

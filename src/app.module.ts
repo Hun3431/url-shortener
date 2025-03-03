@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UrlEntity } from './entity/url/url.entity';
 import { UrlModule } from './url/url.module';
 import * as process from 'node:process';
-import { UrlService } from './url/url.service';
 
 @Module({
   imports: [
@@ -25,7 +24,7 @@ import { UrlService } from './url/url.service';
     UrlModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UrlService],
+  providers: [AppService],
   exports: [TypeOrmModule],
 })
 export class AppModule {}
