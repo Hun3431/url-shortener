@@ -2,6 +2,8 @@ FROM node:22 AS builder
 
 WORKDIR /app
 
+COPY package*.json ./
+COPY tsconfig*.json ./
 COPY . .
 
 RUN npm install
