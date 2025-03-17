@@ -1,6 +1,6 @@
-FROM node
+FROM node:22 AS build
 
-WORKDIR /project
+WORKDIR /app
 
 COPY . .
 
@@ -8,7 +8,7 @@ RUN npm install
 RUN npm run build
 
 
-FROM node
+FROM node:22
 
 WORKDIR /app
 
