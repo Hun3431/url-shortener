@@ -2,15 +2,16 @@ FROM node:22 AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY tsconfig*.json ./
+COPY package*.json pnpm-lock.yaml ./
+RUN npm install -g pnpm
+RUN pnpm install
+
 COPY . .
 
-RUN npm install
-RUN npm run build
+RUN pnpm run build
 
 
-FROM node:22
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -21,4 +22,4 @@ COPY --from=builder /app/.env .env
 
 EXPOSE 3000
 
-ENTRYPOINT ["node", "dist/src/main.js"]
+CMD ["node", "dist/main.js"]
