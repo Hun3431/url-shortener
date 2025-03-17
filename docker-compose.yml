@@ -1,5 +1,9 @@
+version: '3.8'
+
 networks:
-  server:
+  common_net:
+    external: true
+    name: common_network
 
 services:
   server:
@@ -14,6 +18,5 @@ services:
     ports:
       - '3010:3000'
     restart: always
-
     networks:
-      - server
+      - common_net
