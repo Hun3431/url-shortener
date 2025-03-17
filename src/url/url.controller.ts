@@ -53,24 +53,6 @@ export class UrlController {
     return this.urlService.createShortUrl(createUrlDto);
   }
 
-  @Get(':shortUrl')
-  @ApiOperation({
-    summary: '단축 URL 리다이렉트',
-    description: '단축 URL로 접속 시 원래 URL로 리다이렉트합니다.',
-  })
-  @ApiParam({ name: 'shortUrl', description: '단축 URL' })
-  @ApiOkResponse({ description: '리다이렉트 성공' })
-  @Redirect('', 302)
-  async redirectUrl(
-    @Param('shortUrl') shortUrl: string,
-  ): Promise<{ url: string }> {
-    const originalUrl = await this.urlService.getOriginalUrl(shortUrl);
-    if (!originalUrl) {
-      throw new NotFoundException('존재하지 않는 단축 URL입니다.');
-    }
-    return { url: originalUrl };
-  }
-
   @Get('exists')
   @ApiOperation({
     summary: 'URL 존재 여부 확인',
@@ -99,5 +81,23 @@ export class UrlController {
   @ApiOkResponse({ description: 'URL 목록 조회 성공', type: [UrlEntity] })
   async getAllUrls(): Promise<UrlEntity[]> {
     return this.urlService.getAllUrls();
+  }
+
+  @Get(':shortUrl')
+  @ApiOperation({
+    summary: '단축 URL 리다이렉트',
+    description: '단축 URL로 접속 시 원래 URL로 리다이렉트합니다.',
+  })
+  @ApiParam({ name: 'shortUrl', description: '단축 URL' })
+  @ApiOkResponse({ description: '리다이렉트 성공' })
+  @Redirect('', 302)
+  async redirectUrl(
+    @Param('shortUrl') shortUrl: string,
+  ): Promise<{ url: string }> {
+    const originalUrl = await this.urlService.getOriginalUrl(shortUrl);
+    if (!originalUrl) {
+      throw new NotFoundException('존재하지 않는 단축 URL입니다.');
+    }
+    return { url: originalUrl };
   }
 }
